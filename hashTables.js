@@ -1,4 +1,6 @@
-students = [
+const prompt = require("prompt-sync")({ sigint: true });
+
+const students = [
   {
     name: "Jean-Luc Garza",
     score: 24,
@@ -115,65 +117,56 @@ class HashTable {
     this.classes = { A: [], B: [], C: [], D: [], Other: [] };
   }
 
-  hash = (classSize, collisionCount = 0) => {
-    const encoded = new TextEncoder("utf-8").encode(classSize);
+  hash = (key) => {
+    const encoded = new TextEncoder("utf-8").encode(key);
     const hashCode = encoded.reduce((a, b) => {
       return a + b;
     }, 0);
 
-    return hashCode + collisionCount;
+    return hashCode;
   };
 
   compress = (hashCode) => {
     return hashCode % this.classSize;
   };
-  // ---------------------------
-  insert = (classSize, score) => {
-    let collisionCount = 0;
-    for (let score of Object.values(students)) {
-      if (score > 90) {
-        console.log();
-      }
+
+  insert = (student, score) => {
+    if (score >= 90 && this.classes.A.length <= this.classSize) {
+      this.classes.A.push({ student, score });
+    } else if (
+      score < 90 &&
+      score >= 80 &&
+      this.classes.B.length <= this.classSize
+    ) {
+      this.classes.B.push({ student, score });
+    } else if (
+      score < 80 &&
+      score >= 70 &&
+      this.classes.C.length <= this.classSize
+    ) {
+      this.classes.C.push({ student, score });
+    } else if (
+      score < 70 &&
+      score >= 60 &&
+      this.classes.D.length <= this.classSize
+    ) {
+      this.classes.D.push({ student, score });
     }
-
-    // }else if (students.score>90){
-
-    // }
+    if (score < 60 && this.classes.Other.length <= this.classSize) {
+      this.classes.Other.push({ student, score });
+    }
   };
-
-  // while (true) {
-  //   const hashCode = this.hash(classSize, collisionCount);
-  //   const index = this.compress(hashCode);
-
-  //   let currentscore = this.array[index];
-  //   if (!currentscore || currentscore[0] === classSize) {
-  //     this.array[index] = [classSize, score];
-  //     break;
-  //   } else {
-  //     collisionCount++;
-  //   }
-  // }
 }
 
-// lookup = (classSize) => {
-//   let collisionCount = 0;
-//   while (true) {
-//     const hashCode = this.hash(classSize, collisionCount);
-//     const index = this.compress(hashCode);
-//     let currentscore = this.array[index];
+let maxStu = prompt("What is the maximum number of students in class");
 
-//     if (!currentscore) return null;
+const stuClass = new HashTable(maxStu);
+students.forEach((student) => {
+  stuClass.insert(student);
+});
 
-//     if (currentscore[0] === classSize) {
-//       return currentscore[1];
-//     }
-
-//     collisionCount++;
-//   }
-// };
-
-// Ask the user for the maximum number of students in class
-let maxSud = prompt("What is the maximum number of students in class");
-// The students list with their scores and names should be read from a the list provided below.
-
-// The program should then print out the students with their allocated classes.
+console.log(`Class A Students ${stuClass.classes.A}`);
+console.log(`Class B Students ${stuClass.classes.B}`);
+console.log(`Class C Students ${stuClass.classes.C}`);
+console.log(`Class D Students ${stuClass.classes.D}`);
+console.log(`Class Other Students ${stuClass.classes.Other}`);
