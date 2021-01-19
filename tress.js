@@ -51,8 +51,9 @@ while (fullName !== "done") {
         if (child) {
           current = child;
         } else {
-          console.log("Person does not exist");
-          break;
+          let newNode = new TreeNode(name);
+          current.addChild(newNode);
+          current = newNode;
         }
       }
     }
